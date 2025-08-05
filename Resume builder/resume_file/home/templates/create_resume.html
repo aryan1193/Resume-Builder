@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Resume - Resume Builder</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .form-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 12px 15px;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+        }
+        
+        .btn-outline-primary {
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 10px;
+            padding: 8px 20px;
+        }
+        
+        .btn-outline-primary:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-outline-danger {
+            border: 2px solid #dc3545;
+            color: #dc3545;
+            border-radius: 10px;
+            padding: 8px 20px;
+        }
+        
+        .btn-outline-danger:hover {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .dynamic-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .dynamic-item:last-child {
+            margin-bottom: 0;
+        }
+        
+                 .remove-btn {
+             float: right;
+             margin-top: -10px;
+             margin-right: -10px;
+         }
+         
+         .form-control.is-valid {
+             border-color: #198754;
+             box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+         }
+         
+         .form-control.is-invalid {
+             border-color: #dc3545;
+             box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+         }
+         
+         .invalid-feedback {
+             display: block;
+             color: #dc3545;
+             font-size: 0.875rem;
+             margin-top: 0.25rem;
+         }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="{% url 'home' %}">
+                <i class="fas fa-file-alt me-2"></i>Resume Builder
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="text-center mb-4">Create Your Resume</h2>
+                
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Basic Information -->
+                    <div class="form-section">
+                        <h4 class="section-header">
+                            <i class="fas fa-info-circle me-2"></i>Basic Information
+                        </h4>
+                        <div class="p-4">
+                            <div class="row">
+                                                                 <div class="col-md-6 mb-3">
+                                     <label class="form-label">Resume Title <span class="text-danger">*</span></label>
+                                     <input type="text" class="form-control" name="title" value="My Resume" required>
+                                 </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Template Style</label>
+                                    <select class="form-select" name="template">
+                                        <option value="modern">Modern</option>
+                                        <option value="classic">Classic</option>
+                                        <option value="creative">Creative</option>
+                                        <option value="minimal">Minimal</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                                                 <div class="col-md-6 mb-3">
+                                     <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                                     <input type="text" class="form-control" name="name" id="name" pattern="[A-Za-z\s]{3,}" title="Name must be at least 3 letters long and contain only letters and spaces" required>
+                                     <div class="invalid-feedback">
+                                         Name must be at least 3 letters long and contain only letters and spaces.
+                                     </div>
+                                 </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Age</label>
+                                    <input type="number" class="form-control" name="age">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">About Me</label>
+                                <textarea class="form-control" name="about" rows="3" placeholder="Brief description about yourself..."></textarea>
+                            </div>
+                            <div class="row">
+                                                                 <div class="col-md-6 mb-3">
+                                     <label class="form-label">Email <span class="text-danger">*</span></label>
+                                     <input type="email" class="form-control" name="email" id="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address" required>
+                                     <div class="invalid-feedback">
+                                         Please enter a valid email address.
+                                     </div>
+                                 </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Phone</label>
+                                    <input type="tel" class="form-control" name="phone">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Address</label>
+                                <textarea class="form-control" name="address" rows="2"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Profile Picture</label>
+                                <input type="file" class="form-control" name="profile_picture" accept="image/*">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Media Links -->
+                    <div class="form-section">
+                        <h4 class="section-header">
+                            <i class="fas fa-share-alt me-2"></i>Social Media & Links
+                        </h4>
+                        <div class="p-4">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">LinkedIn</label>
+                                    <input type="url" class="form-control" name="linkedin" placeholder="https://linkedin.com/in/yourprofile">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">GitHub</label>
+                                    <input type="url" class="form-control" name="github" placeholder="https://github.com/yourusername">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Portfolio</label>
+                                    <input type="url" class="form-control" name="portfolio" placeholder="https://yourportfolio.com">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Twitter</label>
+                                    <input type="url" class="form-control" name="twitter" placeholder="https://twitter.com/yourhandle">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skills -->
+                    <div class="form-section">
+                        <h4 class="section-header">
+                            <i class="fas fa-tools me-2"></i>Skills
+                        </h4>
+                        <div class="p-4">
+                            <div id="skills-container">
+                                <div class="dynamic-item">
+                                    <button type="button" class="btn btn-outline-danger btn-sm remove-btn" onclick="removeItem(this)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Skill Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="skills[]" placeholder="e.g., Python" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Proficiency Level</label>
+                                            <select class="form-select" name="skill_proficiencies[]">
+                                                <option value="beginner">Beginner</option>
+                                                <option value="intermediate" selected>Intermediate</option>
+                                                <option value="advanced">Advanced</option>
+                                                <option value="expert">Expert</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-outline-primary" onclick="addSkill()">
+                                    <i class="fas fa-plus me-2"></i>Add Skill
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Education -->
+                    <div class="form-section">
+                        <h4 class="section-header">
+                            <i class="fas fa-graduation-cap me-2"></i>Education
+                        </h4>
+                        <div class="p-4">
+                            <div id="education-container">
+                                <div class="dynamic-item">
+                                    <button type="button" class="btn btn-outline-danger btn-sm remove-btn" onclick="removeItem(this)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Degree</label>
+                                            <input type="text" class="form-control" name="degrees[]" placeholder="e.g., Bachelor of Science" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Institution</label>
+                                            <input type="text" class="form-control" name="institutions[]" placeholder="University name" required>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Year</label>
+                                            <input type="text" class="form-control" name="years[]" placeholder="2020" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">GPA (Optional)</label>
+                                            <input type="text" class="form-control" name="gpas[]" placeholder="3.8">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-outline-primary" onclick="addEducation()">
+                                    <i class="fas fa-plus me-2"></i>Add Education
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Languages -->
+                    <div class="form-section">
+                        <h4 class="section-header">
+                            <i class="fas fa-language me-2"></i>Languages
+                        </h4>
+                        <div class="p-4">
+                            <div id="languages-container">
+                                <div class="dynamic-item">
+                                    <button type="button" class="btn btn-outline-danger btn-sm remove-btn" onclick="removeItem(this)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Language <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="languages[]" placeholder="e.g., English" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Proficiency</label>
+                                            <select class="form-select" name="proficiencies[]">
+                                                <option value="basic">Basic</option>
+                                                <option value="intermediate" selected>Intermediate</option>
+                                                <option value="advanced">Advanced</option>
+                                                <option value="native">Native</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-outline-primary" onclick="addLanguage()">
+                                    <i class="fas fa-plus me-2"></i>Add Language
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Projects -->
+                    <div class="form-section">
+                        <h4 class="section-header">
+                            <i class="fas fa-project-diagram me-2"></i>Projects
+                        </h4>
+                        <div class="p-4">
+                            <div id="projects-container">
+                                <div class="dynamic-item">
+                                    <button type="button" class="btn btn-outline-danger btn-sm remove-btn" onclick="removeItem(this)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Project Title</label>
+                                            <input type="text" class="form-control" name="project_titles[]" placeholder="Project name" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Duration</label>
+                                            <input type="text" class="form-control" name="project_durations[]" placeholder="3 months" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Description</label>
+                                        <textarea class="form-control" name="project_descriptions[]" rows="3" placeholder="Project description..." required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Technologies Used</label>
+                                        <input type="text" class="form-control" name="project_technologies[]" placeholder="e.g., React, Node.js, MongoDB">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-outline-primary" onclick="addProject()">
+                                    <i class="fas fa-plus me-2"></i>Add Project
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Work Experience -->
+                    <div class="form-section">
+                        <h4 class="section-header">
+                            <i class="fas fa-briefcase me-2"></i>Work Experience
+                        </h4>
+                        <div class="p-4">
+                            <div id="experience-container">
+                                <div class="dynamic-item">
+                                    <button type="button" class="btn btn-outline-danger btn-sm remove-btn" onclick="removeItem(this)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Company</label>
+                                            <input type="text" class="form-control" name="companies[]" placeholder="Company name" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Position</label>
+                                            <input type="text" class="form-control" name="positions[]" placeholder="Job title" required>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Duration</label>
+                                            <input type="text" class="form-control" name="work_durations[]" placeholder="2020 - 2023" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Location</label>
+                                            <input type="text" class="form-control" name="work_locations[]" placeholder="City, Country">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Description</label>
+                                        <textarea class="form-control" name="work_descriptions[]" rows="3" placeholder="Job responsibilities and achievements..." required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-outline-primary" onclick="addExperience()">
+                                    <i class="fas fa-plus me-2"></i>Add Work Experience
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Achievements -->
+                    <div class="form-section">
+                        <h4 class="section-header">
+                            <i class="fas fa-trophy me-2"></i>Achievements
+                        </h4>
+                        <div class="p-4">
+                            <div id="achievements-container">
+                                <div class="dynamic-item">
+                                    <button type="button" class="btn btn-outline-danger btn-sm remove-btn" onclick="removeItem(this)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <div class="row">
+                                        <div class="col-md-8 mb-3">
+                                            <label class="form-label">Achievement Title</label>
+                                            <input type="text" class="form-control" name="achievement_titles[]" placeholder="e.g., Employee of the Year" required>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label">Year</label>
+                                            <input type="text" class="form-control" name="achievement_years[]" placeholder="2023">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Description</label>
+                                        <textarea class="form-control" name="achievement_descriptions[]" rows="2" placeholder="Brief description of the achievement..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-outline-primary" onclick="addAchievement()">
+                                    <i class="fas fa-plus me-2"></i>Add Achievement
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save me-2"></i>Create Resume
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+     <script>
+         // Form validation
+         document.addEventListener('DOMContentLoaded', function() {
+             const form = document.querySelector('form');
+             const nameInput = document.getElementById('name');
+             const emailInput = document.getElementById('email');
+             
+             // Name validation
+             nameInput.addEventListener('input', function() {
+                 const name = this.value;
+                 const namePattern = /^[A-Za-z\s]{3,}$/;
+                 
+                 if (namePattern.test(name)) {
+                     this.classList.remove('is-invalid');
+                     this.classList.add('is-valid');
+                 } else {
+                     this.classList.remove('is-valid');
+                     this.classList.add('is-invalid');
+                 }
+             });
+             
+             // Email validation
+             emailInput.addEventListener('input', function() {
+                 const email = this.value;
+                 const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                 
+                 if (emailPattern.test(email)) {
+                     this.classList.remove('is-invalid');
+                     this.classList.add('is-valid');
+                 } else {
+                     this.classList.remove('is-valid');
+                     this.classList.add('is-invalid');
+                 }
+             });
+             
+             // Form submission validation
+             form.addEventListener('submit', function(e) {
+                 const name = nameInput.value;
+                 const email = emailInput.value;
+                 const namePattern = /^[A-Za-z\s]{3,}$/;
+                 const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                 
+                 if (!namePattern.test(name)) {
+                     e.preventDefault();
+                     nameInput.classList.add('is-invalid');
+                     alert('Please enter a valid name (minimum 3 letters, no numbers)');
+                     return false;
+                 }
+                 
+                 if (!emailPattern.test(email)) {
+                     e.preventDefault();
+                     emailInput.classList.add('is-invalid');
+                     alert('Please enter a valid email address');
+                     return false;
+                 }
+             });
+         });
+         
+         function removeItem(button) {
+            const container = button.closest('.dynamic-item');
+            const parentContainer = container.parentElement;
+            
+            // Don't remove if it's the last item
+            if (parentContainer.children.length > 1) {
+                container.remove();
+            } else {
+                alert('You must have at least one item in each section.');
+            }
+        }
+
+        function addSkill() {
+            const container = document.getElementById('skills-container');
+            const newItem = document.createElement('div');
+            newItem.className = 'dynamic-item';
+            newItem.innerHTML = `
+                <button type="button" class="btn btn-outline-danger btn-sm remove-btn" onclick="removeItem(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Skill Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="skills[]" placeholder="e.g., Python" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Proficiency Level</label>
+                        <select class="form-select" name="skill_proficiencies[]">
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate" selected>Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                            <option value="expert">Expert</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+            container.appendChild(newItem);
+        }
+
+        function addEducation() {
+            const container = document.getElementById('education-container');
+            const newItem = document.createElement('div');
+            newItem.className = 'dynamic-item';
+            newItem.innerHTML = `
+                <button type="button" class="btn btn-outline-danger btn-sm remove-btn" onclick="removeItem(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Degree</label>
+                        <input type="text" class="form-control" name="degrees[]" placeholder="e.g., Bachelor of Science" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Institution</label>
+                        <input type="text" class="form-control" name="institutions[]" placeholder="University name" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Year</label>
+                        <input type="text" class="form-control" name="years[]" placeholder="2020" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">GPA (Optional)</label>
+                        <input type="text" class="form-control" name="gpas[]" placeholder="3.8">
+                    </div>
+                </div>
+            `;
+            container.appendChild(newItem);
+        }
+
+        function addLanguage() {
+            const container = document.getElementById('languages-container');
+            const newItem = document.createElement('div');
+            newItem.className = 'dynamic-item';
+            newItem.innerHTML = `
+                <button type="button" class="btn btn-outline-danger btn-sm remove-btn" onclick="removeItem(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Language <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="languages[]" placeholder="e.g., English" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Proficiency</label>
+                        <select class="form-select" name="proficiencies[]">
+                            <option value="basic">Basic</option>
+                            <option value="intermediate" selected>Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                            <option value="native">Native</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+            container.appendChild(newItem);
+        }
+
+        function addProject() {
+            const container = document.getElementById('projects-container');
+            const newItem = document.createElement('div');
+            newItem.className = 'dynamic-item';
+            newItem.innerHTML = `
+                <button type="button" class="btn btn-outline-danger btn-sm remove-btn" onclick="removeItem(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Project Title</label>
+                        <input type="text" class="form-control" name="project_titles[]" placeholder="Project name" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Duration</label>
+                        <input type="text" class="form-control" name="project_durations[]" placeholder="3 months" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" name="project_descriptions[]" rows="3" placeholder="Project description..." required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Technologies Used</label>
+                    <input type="text" class="form-control" name="project_technologies[]" placeholder="e.g., React, Node.js, MongoDB">
+                </div>
+            `;
+            container.appendChild(newItem);
+        }
+
+        function addExperience() {
+            const container = document.getElementById('experience-container');
+            const newItem = document.createElement('div');
+            newItem.className = 'dynamic-item';
+            newItem.innerHTML = `
+                <button type="button" class="btn btn-outline-danger btn-sm remove-btn" onclick="removeItem(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Company</label>
+                        <input type="text" class="form-control" name="companies[]" placeholder="Company name" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Position</label>
+                        <input type="text" class="form-control" name="positions[]" placeholder="Job title" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Duration</label>
+                        <input type="text" class="form-control" name="work_durations[]" placeholder="2020 - 2023" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Location</label>
+                        <input type="text" class="form-control" name="work_locations[]" placeholder="City, Country">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" name="work_descriptions[]" rows="3" placeholder="Job responsibilities and achievements..." required></textarea>
+                </div>
+            `;
+            container.appendChild(newItem);
+        }
+
+        function addAchievement() {
+            const container = document.getElementById('achievements-container');
+            const newItem = document.createElement('div');
+            newItem.className = 'dynamic-item';
+            newItem.innerHTML = `
+                <button type="button" class="btn btn-outline-danger btn-sm remove-btn" onclick="removeItem(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <label class="form-label">Achievement Title</label>
+                        <input type="text" class="form-control" name="achievement_titles[]" placeholder="e.g., Employee of the Year" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Year</label>
+                        <input type="text" class="form-control" name="achievement_years[]" placeholder="2023">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" name="achievement_descriptions[]" rows="2" placeholder="Brief description of the achievement..."></textarea>
+                </div>
+            `;
+            container.appendChild(newItem);
+        }
+    </script>
+</body>
+</html> 

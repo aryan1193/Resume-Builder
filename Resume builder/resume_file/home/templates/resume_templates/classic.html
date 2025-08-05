@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ resume.name }} - Resume</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Times New Roman', serif;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+        }
+        
+        .resume-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 40px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .header .title {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+        }
+        
+        .section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-bottom: 1px solid #333;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+        }
+        
+        .about {
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        
+        .skills-list {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .skills-list li {
+            background: #f5f5f5;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+        }
+        
+        .education-item, .experience-item, .project-item {
+            margin-bottom: 15px;
+        }
+        
+        .education-item h3, .experience-item h3, .project-item h3 {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .education-item .institution, .experience-item .company {
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .education-item .year, .experience-item .duration, .project-item .duration {
+            color: #888;
+            font-style: italic;
+        }
+        
+        .experience-item .description, .project-item .description {
+            margin-top: 8px;
+            color: #555;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+        
+        .languages-list {
+            list-style: none;
+        }
+        
+        .languages-list li {
+            margin-bottom: 5px;
+        }
+        
+        .achievements-list {
+            list-style: disc;
+            margin-left: 20px;
+        }
+        
+        .achievement-description {
+            margin-top: 5px;
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .resume-container {
+                box-shadow: none;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>{{ resume.name }}</h1>
+            <div class="title">{{ resume.about }}</div>
+            
+            <div class="contact-info">
+                {% if resume.email %}
+                    <span><i class="fas fa-envelope"></i> {{ resume.email }}</span>
+                {% endif %}
+                {% if resume.phone %}
+                    <span><i class="fas fa-phone"></i> {{ resume.phone }}</span>
+                {% endif %}
+                {% if resume.address %}
+                    <span><i class="fas fa-map-marker-alt"></i> {{ resume.address }}</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- About -->
+        {% if resume.about %}
+            <div class="section">
+                <div class="about">{{ resume.about }}</div>
+            </div>
+        {% endif %}
+        
+        <!-- Skills -->
+        {% if skills %}
+            <div class="section">
+                <h2 class="section-title">Skills</h2>
+                <ul class="skills-list">
+                    {% for skill in skills %}
+                        <li>{{ skill.name }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        
+        <!-- Education -->
+        {% if education %}
+            <div class="section">
+                <h2 class="section-title">Education</h2>
+                {% for edu in education %}
+                    <div class="education-item">
+                        <h3>{{ edu.degree }}</h3>
+                        <div class="institution">{{ edu.institution }}</div>
+                        <div class="year">{{ edu.year }}</div>
+                        {% if edu.gpa %}
+                            <div>GPA: {{ edu.gpa }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <!-- Work Experience -->
+        {% if work_experience %}
+            <div class="section">
+                <h2 class="section-title">Work Experience</h2>
+                {% for exp in work_experience %}
+                    <div class="experience-item">
+                        <h3>{{ exp.position }}</h3>
+                        <div class="company">{{ exp.company }}</div>
+                        <div class="duration">{{ exp.duration }}</div>
+                        <div class="description">{{ exp.description }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <!-- Projects -->
+        {% if projects %}
+            <div class="section">
+                <h2 class="section-title">Projects</h2>
+                {% for project in projects %}
+                    <div class="project-item">
+                        <h3>{{ project.title }}</h3>
+                        <div class="duration">{{ project.duration }}</div>
+                        <div class="description">{{ project.description }}</div>
+                        {% if project.technologies %}
+                            <div><strong>Technologies:</strong> {{ project.technologies }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <!-- Languages -->
+        {% if languages %}
+            <div class="section">
+                <h2 class="section-title">Languages</h2>
+                <ul class="languages-list">
+                    {% for language in languages %}
+                        <li><strong>{{ language.name }}</strong> - {{ language.proficiency|title }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        
+        <!-- Achievements -->
+        {% if achievements %}
+            <div class="section">
+                <h2 class="section-title">Achievements</h2>
+                <ul class="achievements-list">
+                    {% for achievement in achievements %}
+                        <li>
+                            <strong>{{ achievement.title }}</strong>
+                            {% if achievement.description %}
+                                <div class="achievement-description">{{ achievement.description }}</div>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html> 
